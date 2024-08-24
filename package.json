@@ -4,7 +4,7 @@
   "description": "Discord bot for the awful weasels",
   "main": "index.js",
   "scripts": {
-    "start": "node srcs/index.js",
+    "start": "node --env-file=.env srcs/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,8 +12,5 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^14.15.3"
-  },
-  "devDependencies": {
-    "dotenv": "^16.4.5"
   }
 }
