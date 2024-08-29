@@ -2,7 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 
 const fieldsFunctions = [
 	getCursusField,
-	getPorfileField,
+	getIntraField,
 ]
 
 module.exports.buildUserEmbed = function(user) {
@@ -44,24 +44,13 @@ function getCursusField(user) {
 	return null;
 }
 
-
-
-function getPiscineField(user) {
-	return {
-		name: "Piscine",
-		value: `$, `,
-		inline: false,
-	}
-}
-
-function getPorfileField(user) {
+function getIntraField(user) {
 	return {
 		name: "Intra",
 		value: `[link](https://profile.intra.42.fr/users/${user.login})`,
-		inline: false,
+		inline: true,
 	}
 }
-
 
 function getPrimaryCampus(user) {
   for (let i = 0; i < user.campus_users.length; i++) {
