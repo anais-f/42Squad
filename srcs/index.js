@@ -1,5 +1,5 @@
 const {Api42} = require('../Api42.js/Api42.js');
-const { buildUserEmbed } = require('./buildUserEmbed.js');
+const { getProfileEmbed } = require('./getProfileEmbed.js');
 
 const api42 = new Api42();
 
@@ -46,7 +46,7 @@ async function searchLogin(message) {
   const login = message.content.slice(index, index_end);
   try {
     const user = await api42.getUser(login);
-    await message.reply({ embeds: [buildUserEmbed(user)] });
+    await message.reply({ embeds: [getProfileEmbed(user)] });
   } catch (err) {
     message.reply(`\`${login}\` : login not found`);
     console.error(err);

@@ -5,7 +5,7 @@ const fieldsFunctions = [
 	getIntraField,
 ]
 
-module.exports.buildUserEmbed = function(user) {
+module.exports.getProfileEmbed = function(user) {
 	const embed = new EmbedBuilder()
     .setTitle(`${user.login}`)
     .setImage(user.image.versions.small)
