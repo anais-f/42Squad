@@ -66,20 +66,20 @@ function getPrimaryCampus(user) {
 	return null;
 };
 
-function getCampusField(user) {
-  for (let i = 0; i < user.campus_users.length; i++) {
-    if (user.campus_users[i].is_primary === true)
-    {
-			for (let j = 0; j < user.campus.length; j++) {
-        if (user.campus[j].id === user.campus_users[i].campus_id) {
-          return {
-            name: "Campus",
-            value: user.campus[j].name,
-            inline: true,
-          };
-        }
-      }
-    }
-  }
-	return null;
-};
+// function getCampusField(user) {
+//   for (let i = 0; i < user.campus_users.length; i++) {
+//     if (user.campus_users[i].is_primary === true)
+//     {
+// 			for (let j = 0; j < user.campus.length; j++) {
+//         if (user.campus[j].id === user.campus_users[i].campus_id) {
+//           return {
+//             name: "Campus",
+//             value: user.campus[j].name,
+//             inline: true,
+//           };
+//         }
+//       }
+//     }
+//   }
+// 	return null;
+// };
