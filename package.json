@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.15.3"
+    "discord.js": "^14.15.3",
+    "parse-link-header": "^2.0.0",
+    "throttled-queue": "^2.1.4"
   }
 }
