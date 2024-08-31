@@ -1,5 +1,6 @@
 const {Api42} = require('../Api42.js/Api42.js');
 const { getProfileEmbed } = require('./getProfileEmbed.js');
+const trackLocation = require('./trackLocation.js');
 
 const api42 = new Api42();
 
@@ -25,11 +26,14 @@ async function main() {
         }
 		const channelAnnounceId = client.channels.cache.get("1279476635455848458");
 		var tab = await trackLocation();
-		var string = tab.map(obj =>`${obj.login} logged in : ${obj.location}`).join('\n');
+		var string = tab.map(obj =>`${obj.login} logged in : \`${obj.location}\``).join('\n');
 		// console.log(await trackLocation());
 		// console.log(string);
 		if (channelAnnounceId) {
 			const msgId = channelAnnounceId.send(string);
+			// const msgId = "1279485152610746368";
+			// if (msgId)
+			// 	await msgId.edit(string);
 		}
     });
     
@@ -61,35 +65,5 @@ async function searchLogin(message) {
   }
 }
 
-const tracking = [
-	{login: "acancel", location: null},
-	{login: "anfichet", location: null},
-	{login: "bwisniew", location: null},
-	{login: "cdomet-d", location: null},
-	{login: "csweetin", location: null},
-	{login: "ibertran", location: null},
-	{login: "kchillon", location: null},
-	{login: "lcottet", location: null},
-	{login: "lrio", location: null},
-	{login: "mjuffard", location: null},
-]
-
-async function trackLocation() {
-	const usersLocation = await api42.getCampusLocations(9, true);
-
-	tracking.forEach((user) => {
-		const trackUser = usersLocation.find(loginUser => loginUser.user.login === user.login);
-		if (trackUser) {
-			user.location = trackUser.host;
-		}
-	});
-	tracking.forEach((user) => {
-		if (user.location === null) {
-			user.location = "unavailable";
-		}
-	});
-	//console.log(tracking);
-	return (tracking);
-}
 
 main();

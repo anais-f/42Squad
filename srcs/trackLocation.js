@@ -33,4 +33,5 @@ async function trackLocation() {
 	return (tracking);
 }
 
+module.exports = trackLocation;
 //main();
