@@ -23,6 +23,14 @@ async function main() {
         if (channel) {
             channel.send(`Logged in as ${client.user.tag}`);
         }
+		const channelAnnounceId = client.channels.cache.get("1279476635455848458");
+		var tab = await trackLocation();
+		var string = tab.map(obj =>`${obj.login} logged in : ${obj.location}`).join('\n');
+		// console.log(await trackLocation());
+		// console.log(string);
+		if (channelAnnounceId) {
+			const msgId = channelAnnounceId.send(string);
+		}
     });
     
     client.on("messageCreate", searchLogin);
@@ -51,6 +59,37 @@ async function searchLogin(message) {
     message.reply(`\`${login}\` : login not found`);
     console.error(err);
   }
+}
+
+const tracking = [
+	{login: "acancel", location: null},
+	{login: "anfichet", location: null},
+	{login: "bwisniew", location: null},
+	{login: "cdomet-d", location: null},
+	{login: "csweetin", location: null},
+	{login: "ibertran", location: null},
+	{login: "kchillon", location: null},
+	{login: "lcottet", location: null},
+	{login: "lrio", location: null},
+	{login: "mjuffard", location: null},
+]
+
+async function trackLocation() {
+	const usersLocation = await api42.getCampusLocations(9, true);
+
+	tracking.forEach((user) => {
+		const trackUser = usersLocation.find(loginUser => loginUser.user.login === user.login);
+		if (trackUser) {
+			user.location = trackUser.host;
+		}
+	});
+	tracking.forEach((user) => {
+		if (user.location === null) {
+			user.location = "unavailable";
+		}
+	});
+	//console.log(tracking);
+	return (tracking);
 }
 
 main();
