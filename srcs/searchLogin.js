@@ -14,8 +14,8 @@ async function searchLogin(message) {
 		const user = await api42.getUser(login);
 		await message.reply({ embeds: [getProfileEmbed(user)] });
 	} catch (err) {
-		message.reply(`\`${login}\` : login not found`);
-		console.error(err);
+		if (!err.rawError)
+			message.reply(`\`${login}\` : login not found`).catch(() => {});
 	}
 }
 
