@@ -16,7 +16,7 @@ const tracking = [
 ]
 
 async function trackLocation() {
-	const usersLocation = await api42.getCampusLocations(9000, true);
+	const usersLocation = await api42.getCampusLocations(9, true);
 	tracking.forEach((user) => {
 		const trackUser = usersLocation.find(loginUser => loginUser.user.login === user.login);
 		if (trackUser) {
