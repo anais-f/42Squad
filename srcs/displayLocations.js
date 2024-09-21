@@ -38,13 +38,15 @@ async function displayLocations(client) {
 	
 		const embed = new EmbedBuilder()
 		.setColor("#00ecef")
-		.setDescription("## 🪿 Currently logged in");
+		.setDescription("## 🪿 Currently logged in")
+		.setTimestamp();
 		locations.forEach((element) => {
 			embed.addFields({
 				name: `\`${element.login.padEnd(8, " ")}\` 📍`,
 				value: "⤷" + "`" + element.host + "`",
 				inline: true,
 			});
+			
 		});
 	
 		  const channelAnnounceId = client.channels.cache.get(process.env.TRACK_CHANNEL);
