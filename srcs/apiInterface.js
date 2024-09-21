@@ -1,3 +1,3 @@
-const { Api42 } = require("../Api42.js/Api42.js");
+const { Api42 } = require("@ibertran/api42");
 
 module.exports.api42 = new Api42();
