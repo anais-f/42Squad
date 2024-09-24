@@ -5,15 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "node --env-file=.env srcs/",
-	"deploy": "node srcs/",
-	"test": "node --env-file=.env srcs/trackLocation.js"
+    "deploy": "node srcs/",
+    "test": "node --env-file=.env srcs/trackLocation.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.15.3",
-    "parse-link-header": "^2.0.0",
-    "throttled-queue": "^2.1.4"
+    "@ibertran/api42": "^1.0.0",
+    "discord.js": "^14.15.3"
   }
 }
