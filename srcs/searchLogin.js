@@ -6,7 +6,7 @@ async function searchLogin(message) {
 	if (message.author.bot)
 		return;
 	message.content = message.content.toLowerCase();
-	let match = message.content.match(/[a-z0-9]+@42/g)
+	let match = message.content.match(/[a-z0-9-]+@42/g)
 	if (!match)
 		return;
 	for (let login of match) {
