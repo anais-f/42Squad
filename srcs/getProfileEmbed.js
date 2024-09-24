@@ -37,7 +37,7 @@ function getCursusField(user) {
     if (selected)
       return {
         name: trackedCursus[i].name,
-        value: `lvl ${selected.level}`,
+        value: `lvl ${selected.level.toFixed(2)}`,
         inline: true,
       };
   }
