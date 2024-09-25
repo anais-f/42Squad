@@ -1,0 +1,26 @@
+name: deploy_main
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: merge main and restart service
+      uses: appleboy/ssh-action@v1.0.3
+      env:
+        FT_FRIENDS_DIR: ${{ vars.FT_FRIENDS_DIR }}
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        script_stop: true
+        envs : FT_FRIENDS_DIR
+        script: |
+          cd $FT_FRIENDS_DIR
+          git fetch origin main
+          git merge origin/main
+          npm install
+          sudo systemctl restart ft_friends
