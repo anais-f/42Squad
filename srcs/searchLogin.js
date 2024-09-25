@@ -5,15 +5,22 @@ const { getProfileEmbed } = require("./getProfileEmbed.js");
 async function searchLogin(message) {
 	if (message.author.bot)
 		return;
-	message.content = message.content.toLowerCase();
-	let match = message.content.match(/[a-z0-9-]+@42/g)
+	let match = message.content.match(/[a-z0-9-]+@42+($|\s)/ig)
 	if (!match)
 		return;
+	const sent = [];
 	for (let login of match) {
-		login = login.slice(0, login.length - 3);
+		login = login.match(/[a-z0-9-]+/i);
+		if (sent.length >= 5) {
+			break;
+		} else if (login[0].length > 8 || sent.find(e => e == login)) {
+			continue;
+		}
+		login = login[0].toLowerCase();
 		try {
 			const user = await api42.getUser(login);
 			await message.reply({ embeds: [getProfileEmbed(user)] });
+			sent.push(login);
 		} catch (err) {
 			if (!err.rawError)
 				message.reply(`\`${login}\` : login not found`).catch(() => {});
