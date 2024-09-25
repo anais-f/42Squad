@@ -11,8 +11,11 @@ async function searchLogin(message) {
 	const sent = [];
 	for (let login of match) {
 		login = login.match(/[a-z0-9-]+/i);
-		if (login[0].length > 8 || sent.find(e => e == login))
+		if (sent.length >= 5) {
+			break;
+		} else if (login[0].length > 8 || sent.find(e => e == login)) {
 			continue;
+		}
 		login = login[0].toLowerCase();
 		try {
 			const user = await api42.getUser(login);
