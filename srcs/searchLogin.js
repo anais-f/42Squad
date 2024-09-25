@@ -8,14 +8,16 @@ async function searchLogin(message) {
 	let match = message.content.match(/[a-z0-9-]+@42+($|\s)/ig)
 	if (!match)
 		return;
+	const sent = [];
 	for (let login of match) {
 		login = login.match(/[a-z0-9-]+/i);
-		if (login[0].length > 8)
+		if (login[0].length > 8 || sent.find(e => e == login))
 			continue;
 		login = login[0].toLowerCase();
 		try {
 			const user = await api42.getUser(login);
 			await message.reply({ embeds: [getProfileEmbed(user)] });
+			sent.push(login);
 		} catch (err) {
 			if (!err.rawError)
 				message.reply(`\`${login}\` : login not found`).catch(() => {});
