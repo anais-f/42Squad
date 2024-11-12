@@ -20,7 +20,7 @@ client.once(Events.ClientReady, (readyClient) => {
   console.log(`Logged in as ${readyClient.user.tag}`);
 
   // Schedule a daily check at 3:00 PM server time
-  cron.schedule('* 15 * * *', () => secretNotification(client));
+  cron.schedule('0 15 * * *', () => secretNotification(client));
 
   // Announce that client is ready in a discord channel
   const channel = client.channels.cache.get(process.env.LOG_CHANNEL_ID);
