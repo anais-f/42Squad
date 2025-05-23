@@ -12,7 +12,8 @@ const tracking = [
 	{login: "lcottet", host: null},
 	{login: "lrio", host: null},
 	{login: "mjuffard", host: null},
-	{login: "talibert", host: null}
+	{login: "talibert", host: null},
+	{login: "scros", host: null}
 ]
 
 async function trackLocation() {
