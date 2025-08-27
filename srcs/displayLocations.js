@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { api42 } = require("./apiInterface.js");
+const db = require("./database.js");
 
 const tracking = [
 	{login: "acancel", host: null},
@@ -29,7 +30,8 @@ async function trackLocation() {
 	return (tracking);
 }
 
-let lastMessage;
+// let lastMessage;
+
 
 async function displayLocations(client) {
 	try {
@@ -50,20 +52,47 @@ async function displayLocations(client) {
 			
 		});
 	
-		  const channelAnnounceId = client.channels.cache.get(process.env.TRACK_CHANNEL);
-		  if (channelAnnounceId) {
-			if (!lastMessage) {
-				lastMessage = await channelAnnounceId.send({ embeds: [embed] })
-				.catch(error => {
-					console.error(`Error senting message: ${error.rawError.message}`)
-				});
-			} else {
-				lastMessage.edit({ embeds: [embed] })
-				.catch(async error => {
-					lastMessage = await channelAnnounceId.send({ embeds: [embed] });
+		const channelAnnounceId = client.channels.cache.get(process.env.TRACK_CHANNEL);
+		if (channelAnnounceId) {
+			db.serialize(async () => {
+				const lastMessage = db.prepare("SELECT msgID FROM channel WHERE channelID = ?").get(channelAnnounceId, (err, row) => {
+					if (err) {
+						console.error("Error fetching last message:", err);
+					} else if (row) {
+						console.log("row", row);
+					} else {
+						console.log("No row found");
+					}
 				})
-			}
-		  };
+
+				// if (!lastMessage) {
+				// 	lastMessage = await channelAnnounceId.send({ embeds: [embed] })
+				// 	.catch(error => {
+				// 		console.error(`Error senting message: ${error.rawError.message}`)
+				// 	});
+				// } else {
+				// 	lastMessage.edit({ embeds: [embed] })
+				// 	.catch(async error => {
+				// 	lastMessage = await channelAnnounceId.send({ embeds: [embed] });
+				// 	})
+				// }
+			})
+			
+		};
+		//   const channelAnnounceId = client.channels.cache.get(process.env.TRACK_CHANNEL);
+		//   if (channelAnnounceId) {
+		// 	if (!lastMessage) {
+		// 		lastMessage = await channelAnnounceId.send({ embeds: [embed] })
+		// 		.catch(error => {
+		// 			console.error(`Error senting message: ${error.rawError.message}`)
+		// 		});
+		// 	} else {
+		// 		lastMessage.edit({ embeds: [embed] })
+		// 		.catch(async error => {
+		// 			lastMessage = await channelAnnounceId.send({ embeds: [embed] });
+		// 		})
+		// 	}
+		//   };
 	} catch (error) {
 		console.error(error);
 	}
