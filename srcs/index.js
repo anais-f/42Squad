@@ -1,8 +1,8 @@
-const cron = require('node-cron');
-const { Client, Events, GatewayIntentBits } = require("discord.js"); // Require the necessary discord.js classes
-const displayLocations = require("./displayLocations.js");
-const searchLogin = require("./searchLogin.js");
-const { secretNotification } = require('./secretNotification.js');
+import cron from 'node-cron';
+import { Client, Events, GatewayIntentBits } from "discord.js";
+import displayLocations from "./displayLocations.js";
+import searchLogin from "./searchLogin.js";
+import { secretNotification } from './secretNotification.js';
 
 // Create a new client instance
 const client = new Client({
@@ -29,7 +29,7 @@ client.once(Events.ClientReady, (readyClient) => {
   }
 
   // Launch Logged users tracking loop
-  setInterval(displayLocations, 30000, client);
+  setInterval(displayLocations, 5000, client);
 
   // Set client activity
   client.user.setActivity("in development");

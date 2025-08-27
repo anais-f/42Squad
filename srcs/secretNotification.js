@@ -1,6 +1,6 @@
-const { api42 } = require("./apiInterface")
+import { api42 } from "./apiInterface.js";
 
-module.exports.secretNotification = async function(client) {
+export async function secretNotification(client) {
 	await api42.getUser('ibertran');
 	if (!api42.secretValidUntil) return;
 	const currentDate = new Date();

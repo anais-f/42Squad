@@ -1,11 +1,11 @@
-const { EmbedBuilder } = require("discord.js");
+import { EmbedBuilder } from "discord.js";
 
 const fieldsFunctions = [
 	getCursusField,
 	getIntraField,
 ]
 
-module.exports.getProfileEmbed = function(user) {
+export function getProfileEmbed(user) {
 	const embed = new EmbedBuilder()
     .setTitle(`${user.login}`)
     .setImage(user.image.versions.small)

@@ -2,6 +2,8 @@
 .vscode
 .DS_Store
 build/*
+vcs.xml 
+database.sqlite*
 
 # Logs
 logs
