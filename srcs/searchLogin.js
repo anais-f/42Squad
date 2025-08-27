@@ -1,5 +1,5 @@
-const { api42 } = require("./apiInterface.js");
-const { getProfileEmbed } = require("./getProfileEmbed.js");
+import { api42 } from "./apiInterface.js";
+import { getProfileEmbed } from "./getProfileEmbed.js";
 
 // Search login and display an embed message in any channel with tag <login>@42
 async function searchLogin(message) {
@@ -28,4 +28,4 @@ async function searchLogin(message) {
 	}
 }
 
-module.exports = searchLogin;
+export default searchLogin;

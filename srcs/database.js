@@ -1,11 +1,11 @@
-const sqlite3 = require('sqlite3').verbose();
+import Database from 'better-sqlite3';
 
-const db = new sqlite3.Database('./db/database.sqlite');
+const db = new Database('./db/database.sqlite');
+db.pragma('journal_mode = WAL');
 
-db.serialize(() => {
-    db.run("CREATE TABLE IF NOT EXISTS channel (channelID TEXT NOT NULL UNIQUE, msgID TEXT)");
-    db.run("INSERT OR IGNORE INTO channel VALUES (1276305483333898291, NULL)");
 
-});
+db.exec("CREATE TABLE IF NOT EXISTS channels (channelID TEXT NOT NULL UNIQUE, msgID TEXT)");
+db.exec("INSERT OR IGNORE INTO channels VALUES (1276305483333898291, NULL)");
+// TODO : make a discord bot command to set the channelID
 
-module.exports = db;
+export default db;
