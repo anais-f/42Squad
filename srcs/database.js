@@ -62,14 +62,14 @@ db.addValue = function (table, column, value) {
  * @param {string} value - The value to remove.
  */
 db.removeValue = function (table, column, value) {
-    if (!this.valueExists(table, column, value)) {
-        console.log(`Value does not exist in ${table}.${column}: ${value}`);
-        return;
-    }
-    const stmt = this.prepare(`DELETE FROM ${table} WHERE ${column} = ?`);
-    stmt.run(value);
-    console.log("Value removed from ${table}.${column}: ${value}");
-}
+  if (!this.valueExists(table, column, value)) {
+    console.log(`Value does not exist in ${table}.${column}: ${value}`);
+    return;
+  }
+  const stmt = this.prepare(`DELETE FROM ${table} WHERE ${column} = ?`);
+  stmt.run(value);
+  console.log(`Value removed from ${table}.${column}: ${value}`);
+};
 
 
 export default db;

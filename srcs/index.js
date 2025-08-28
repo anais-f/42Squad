@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import './deployCommands.js'; // Register slash commands
+import './commandsDeploy.js'; // Register slash commands
 
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
