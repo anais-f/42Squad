@@ -3,12 +3,11 @@ import { Client, Collection, Events, GatewayIntentBits } from "discord.js";
 import displayLocations from "./displayLocations.js";
 import searchLogin from "./searchLogin.js";
 import { secretNotification } from './secretNotification.js';
-
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import './registerCommands.js'; // Register slash commands
+import './deployCommands.js'; // Register slash commands
 
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);

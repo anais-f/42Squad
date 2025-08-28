@@ -6,9 +6,16 @@ async function trackLocation() {
   const usersLocation = await api42.getCampusLocations(9, true);
 
   const updateHost = db.prepare("UPDATE students SET host = ? WHERE login = ?");
-  usersLocation.forEach((user) => {
-    updateHost.run(user.host, user.user.login);
-  })
+  const resetHost = db.prepare("UPDATE students SET host = NULL WHERE login = ?");
+
+  const presentLogins = usersLocation.map(user => user.user.login);
+  const loginsTracked = db.prepare("SELECT login FROM students").all().map(row => row.login);
+
+  loginsTracked.forEach(login => {
+    const user = usersLocation.find(user => user.user.login === login);
+    if (user) updateHost.run(user.host, user.user.login);
+    else  resetHost.run(login);
+  });
 }
 
 function createLocationEmbed(locations) {
@@ -27,6 +34,10 @@ function createLocationEmbed(locations) {
 }
 
 async function sendNewMessage(chanDiscord, chanID, embed) {
+  if (!chanDiscord) {
+    console.error(`Channel with ID ${chanID} not found in cache.`);
+    return;
+  }
     const messageDiscord = await chanDiscord
         .send({ embeds: [embed] })
         .catch((error) => {
@@ -68,6 +79,7 @@ async function displayLocations(client) {
       }
     }
   } catch (error) {
+    console.log("Error in displayLocations:");
     console.error(error);
   }
 }
