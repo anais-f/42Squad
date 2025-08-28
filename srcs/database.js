@@ -1,13 +1,9 @@
 import Database from 'better-sqlite3';
 
 const db = new Database('./db/database.sqlite');
-db.pragma('journal_mode = WAL');
+db.pragma('journal_mode = DELETE');
 
-// DB channels
 db.exec("CREATE TABLE IF NOT EXISTS channels (channelID TEXT NOT NULL UNIQUE, msgID TEXT)");
-// TODO : replace with a discord bot command to set the channelID and insert chanID via command
-db.exec("INSERT OR IGNORE INTO channels VALUES (1276305483333898291, NULL)"); // TESTING DEV
-db.exec("INSERT OR IGNORE INTO channels VALUES (1279476635455848458, NULL)"); // TESTING ANNONCE
 
 // DB students tracking
 db.exec("CREATE TABLE IF NOT EXISTS students (login TEXT NOT NULL UNIQUE, host TEXT)");
@@ -23,10 +19,6 @@ db.exec("INSERT OR IGNORE INTO students VALUES ('lcottet', NULL)");
 db.exec("INSERT OR IGNORE INTO students VALUES ('lrio', NULL)");
 db.exec("INSERT OR IGNORE INTO students VALUES ('mjuffard', NULL)");
 db.exec("INSERT OR IGNORE INTO students VALUES ('scros', NULL)");
-
-//DB chan/users
-// db.exec("CREATE TABLE IF NOT EXISTS chan_students (channelID TEXT NOT NULL, login TEXT NOT NULL)");
-
 
 /**
  * Check if a value exists in a specific table and column.
@@ -70,6 +62,5 @@ db.removeValue = function (table, column, value) {
   stmt.run(value);
   console.log(`Value removed from ${table}.${column}: ${value}`);
 };
-
 
 export default db;
