@@ -6,7 +6,8 @@ db.pragma('journal_mode = WAL');
 // DB channels
 db.exec("CREATE TABLE IF NOT EXISTS channels (channelID TEXT NOT NULL UNIQUE, msgID TEXT)");
 // TODO : replace with a discord bot command to set the channelID and insert chanID via command
-db.exec("INSERT OR IGNORE INTO channels VALUES (1276305483333898291, NULL)");
+db.exec("INSERT OR IGNORE INTO channels VALUES (1276305483333898291, NULL)"); // TESTING DEV
+db.exec("INSERT OR IGNORE INTO channels VALUES (1279476635455848458, NULL)"); // TESTING ANNONCE
 
 // DB students tracking
 db.exec("CREATE TABLE IF NOT EXISTS students (login TEXT NOT NULL UNIQUE, host TEXT)");
