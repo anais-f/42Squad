@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import './commandsDeploy.js'; // Register slash commands
+import './commandsDeploy.js';
 
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -33,24 +33,23 @@ for (const file of commandFiles) {
   const command = await import(filePath);
   client.commands.set(command.data.name, command);
 }
-// Gestion des interactions
+
+// Interaction listener for slash commands
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
 
   const command = client.commands.get(interaction.commandName);
-
   if (!command) return;
 
   try {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
-    await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+    await interaction.reply({ content: 'There was an error while executing this command!', flags: 64 });
   }
 });
 
-
-// messge listener for login search
+// Message listener for login search
 client.on("messageCreate", searchLogin);
 
 // When the client is ready, run this code (only once).
