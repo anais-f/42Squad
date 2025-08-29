@@ -18,8 +18,8 @@ Invite the bot to your server using the following link:
 
 Once added, use the available commands in the channels where the bot has permissions and where you would like to track login activity:
 
-- `/trackchannel <channelid>`: Add the channel to the database.
-- `/untrackchannel <channelid>`: Remove the channel from the database.
+- `/trackchannel`: Add the channel to the database.
+- `/untrackchannel`: Remove the channel from the database.
 - `/tracklogin <login>`: Add a login ID to track.
 - `/untracklogin <login>`: Remove a login ID from tracking.
 
