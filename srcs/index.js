@@ -1,8 +1,18 @@
 import cron from 'node-cron';
-import { Client, Events, GatewayIntentBits } from "discord.js";
+import { Client, Collection, Events, GatewayIntentBits } from "discord.js";
 import displayLocations from "./displayLocations.js";
 import searchLogin from "./searchLogin.js";
 import { secretNotification } from './secretNotification.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import './commandsDeploy.js';
+
+// Resolve __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 
 // Create a new client instance
 const client = new Client({
@@ -13,6 +23,33 @@ const client = new Client({
   ],
 });
 
+// Load commands
+client.commands = new Collection();
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+  const filePath = path.join(commandsPath, file);
+  const command = await import(filePath);
+  client.commands.set(command.data.name, command);
+}
+
+// Interaction listener for slash commands
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isCommand()) return;
+
+  const command = client.commands.get(interaction.commandName);
+  if (!command) return;
+
+  try {
+    await command.execute(interaction);
+  } catch (error) {
+    console.error(error);
+    await interaction.reply({ content: 'There was an error while executing this command!', flags: 64 });
+  }
+});
+
+// Message listener for login search
 client.on("messageCreate", searchLogin);
 
 // When the client is ready, run this code (only once).
