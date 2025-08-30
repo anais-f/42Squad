@@ -52,13 +52,19 @@ async function sendNewMessage(chanDiscord, chanID, embed) {
 async function displayLocations(client) {
   try {
     await trackLocation();
-    const locations = db.prepare("SELECT * FROM students WHERE host IS NOT NULL").all();
-    locations.sort((a, b) => a.host.localeCompare(b.host));
-
-    const embed = createLocationEmbed(locations);
     const chanArrayID = db.prepare("SELECT channelID FROM channels").all().map(row => row.channelID);
 
     for (const chanID of chanArrayID) {
+      // recuperer les logins trackés pour ce channel
+      const trackedLogins = db.prepare("SELECT login FROM tracked WHERE channelID = ?").all(chanID).map(row => row.login);
+
+      // filtrer les locations pour ne garder que ceux qui sont trackés dans ce channel
+      const locations = db.prepare("SELECT * FROM students WHERE host IS NOT NULL").all();
+      const filteredLocations = locations.filter(location => trackedLogins.includes(location.login));
+      filteredLocations.sort((a, b) => a.host.localeCompare(b.host));
+
+      const embed = createLocationEmbed(filteredLocations);
+
       const chanDiscord = client.channels.cache.get(chanID); // recupere le channel via son ID
       if (chanDiscord) {
         const lastMsgID = db

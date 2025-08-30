@@ -5,16 +5,16 @@ db.pragma('journal_mode = DELETE');
 db.pragma('foreign_keys = ON');
 
 db.exec("CREATE TABLE IF NOT EXISTS channels (channelID TEXT NOT NULL UNIQUE, msgID TEXT)");
-db.exec("INSERT OR IGNORE INTO channels VALUES ('1276305483333898291', NULL)");
+// db.exec("INSERT OR IGNORE INTO channels VALUES ('1276305483333898291', NULL)");
 
 // DB students tracking
 db.exec("CREATE TABLE IF NOT EXISTS students (login TEXT NOT NULL UNIQUE, host TEXT)");
 // TODO : replace discord command to add and delete students from tracking
-db.exec("INSERT OR IGNORE INTO students VALUES ('anfichet', NULL)");
+// db.exec("INSERT OR IGNORE INTO students VALUES ('anfichet', NULL)");
 
 // DB trackLogin per channel
-db.exec("CREATE TABLE IF NOT EXISTS tracked (channelID TEXT NOT NULL, login TEXT NOT NULL, FOREIGN KEY (channelID) REFERENCES channels(channelID), FOREIGN KEY (login) REFERENCES students(login), UNIQUE(channelID, login))");
-db.exec("INSERT OR IGNORE INTO tracked VALUES ('1276305483333898291', 'anfichet')");
+db.exec("CREATE TABLE IF NOT EXISTS tracked (channelID TEXT NOT NULL, login TEXT NOT NULL, FOREIGN KEY (channelID) REFERENCES channels(channelID) ON DELETE CASCADE, FOREIGN KEY (login) REFERENCES students(login), UNIQUE(channelID, login))");
+// db.exec("INSERT OR IGNORE INTO tracked VALUES ('1276305483333898291', 'anfichet')");
 
 /**
  * Check if a value exists in a specific table and column.

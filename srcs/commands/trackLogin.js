@@ -26,31 +26,29 @@ export async function execute(interaction) {
     const userPermissionsCheck = await checkUserPermissions(interaction, channel);
     if (!userPermissionsCheck.success) return interaction.reply({ content: userPermissionsCheck.message, flags: MessageFlags.Ephemeral });
 
-    // Check if channel exists in the database
     const channelExisted = await db.valueExists('channels', 'channelID', channelID)
     if (!channelExisted) return interaction.reply({ content: `Channel <#${channel.name}> does not exist in the database. Track channel before track login.`, flags: MessageFlags.Ephemeral });
 
-    // check if login exists in the database students
+    const trackedCount = db.prepare("SELECT COUNT(*) FROM tracked WHERE channelID = ?").get(channelID);
+    if (trackedCount.count >= 24) return interaction.reply({ content: `You have reached the maximum number of tracked logins (24) for this channel <#${channel.name}>.`, flags: MessageFlags.Ephemeral });
+
     const loginExisted = await db.valueExists('students', 'login', login)
     if (loginExisted) {
-     // check if login is already tracked in this channel (table channels_logins)
       const loginTrackedInChannel = db.prepare("SELECT 1 FROM tracked WHERE channelID = ? AND login = ?").get(channelID, login);
-      console.log("log: ", loginTrackedInChannel);
-        // if yes -> return error message
       if (loginTrackedInChannel) return interaction.reply({ content: `Login ${login} is already tracked in this channel <#${channel.name}>.`, flags: MessageFlags.Ephemeral });
-        // if no -> add it to the table channels_logins
       const stmt = db.prepare("INSERT INTO tracked (channelID, login) VALUES (?, ?)");
       stmt.run(channelID, login);
 
       return interaction.reply({ content: `Login \`${login}\` is now tracked in this channel <#${channel.name}>.`, flags: MessageFlags.Ephemeral });
     }
-    else if (!loginExisted) {
+    else {
       try {
         await api42.getUser(login);
         const studentStmt = db.prepare("INSERT INTO students (login) VALUES (?)");
         studentStmt.run(login);
         const stmt = db.prepare("INSERT INTO tracked (channelID, login) VALUES (?, ?)");
         stmt.run(channelID, login);
+
         return interaction.reply({ content: `Login \`${login}\` added in the tracked channel.`, flags: MessageFlags.Ephemeral });
       }
       catch (error) {
