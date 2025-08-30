@@ -18,11 +18,10 @@ export async function execute(interaction) {
     const userPermissionsCheck = await checkUserPermissions(interaction, channel);
     if (!userPermissionsCheck.success) return interaction.reply({ content: userPermissionsCheck.message, flags: MessageFlags.Ephemeral });
 
-    // const channelInDb = await db.valueExists('channels', 'channelID', channelID)
-    // if (channelInDb) return interaction.reply({ content: channelInDb.message, flags: MessageFlags.Ephemeral });
+    const result = db.addValue('channels', 'channelID', channelID);
+    if (!result.success) return interaction.reply({ content: result.message, flags: MessageFlags.Ephemeral });
 
-    await db.addValue('channels', 'channelID', channelID);
-    return interaction.reply({ content: `Channel <#${channelID}> added to the database.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: result.message, flags: MessageFlags.Ephemeral });
   }
   catch (error) {
     console.error('Error adding channel:', error);

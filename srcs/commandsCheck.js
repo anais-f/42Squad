@@ -17,14 +17,12 @@ export async function checkBotPresenceAndPermissions(interaction, channel) {
   const botMember = await interaction.guild.members.fetch(interaction.client.user.id);
 
   if (!channel.members.has(botMember.id)) {
-    // await interaction.reply({ content: 'Bot is not present in the specified channel.', flags: MessageFlags.Ephemeral });
     console.error('Bot is not present in the specified channel.');
     return { success: false, message: 'Bot is not present in the specified channel.' };
   }
 
   const botPermissions = channel.permissionsFor(botMember);
   if (!botPermissions.has('SendMessages', false)) {
-    // await interaction.reply({ content: 'Bot does not have the required permissions in this channel.', flags: MessageFlags.Ephemeral });
     console.error('Bot does not have the required permissions in the specified channel.');
     return { success: false, message: 'Bot does not have the required permissions in the specified channel.' };
   }

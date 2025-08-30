@@ -18,9 +18,6 @@ export async function execute(interaction) {
     const userPermissionsCheck = await checkUserPermissions(interaction, channel);
     if (!userPermissionsCheck.success) return interaction.reply({ content: userPermissionsCheck.message, flags: MessageFlags.Ephemeral });
 
-    const channelInDb = await db.valueExists('channels', 'channelID', channelID)
-    if (!channelInDb) return interaction.reply({ content: channelInDb.message, flags: MessageFlags.Ephemeral });
-
     const lastMsgID = db
         .prepare("SELECT msgID FROM channels WHERE channelID = ?")
         .get(channelID);
@@ -28,9 +25,11 @@ export async function execute(interaction) {
       const messageDiscord = await channel.messages.fetch(lastMsgID.msgID);
       if (messageDiscord) await messageDiscord.delete();
     }
-    db.removeValue('channels', 'channelID', channelID);
-    return interaction.reply({ content: `Channel <#${channelID}> deleted to the database.`, flags: MessageFlags.Ephemeral });
 
+    const result = db.removeValue('channels', 'channelID', channelID);
+    if (!result.success) return interaction.reply({ content: result.message, flags: MessageFlags.Ephemeral });
+
+    return interaction.reply({ content: result.message, flags: MessageFlags.Ephemeral });
   }
   catch (error) {
     console.error('Error remove channel:', error);
