@@ -4,6 +4,8 @@
 build/*
 vcs.xml 
 database.sqlite*
+.idea
+.env 
 
 # Logs
 logs
