@@ -8,7 +8,6 @@ async function trackLocation() {
   const updateHost = db.prepare("UPDATE students SET host = ? WHERE login = ?");
   const resetHost = db.prepare("UPDATE students SET host = NULL WHERE login = ?");
 
-  const presentLogins = usersLocation.map(user => user.user.login);
   const loginsTracked = db.prepare("SELECT login FROM students").all().map(row => row.login);
 
   loginsTracked.forEach(login => {
