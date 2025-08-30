@@ -1,6 +1,5 @@
 import cron from 'node-cron';
 import pkg from 'discord.js';
-const { Client, Collection, Events, GatewayIntentBits, PermissionFlagsBits, MessageFlags } = pkg;
 import displayLocations from "./displayLocations.js";
 import searchLogin from "./searchLogin.js";
 import { secretNotification } from './secretNotification.js';
@@ -8,12 +7,12 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import './commandsDeploy.js';
+const { Client, Collection, Events, GatewayIntentBits, PermissionFlagsBits, MessageFlags } = pkg;
+// import './deploy-commands.js';
 
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
 
 // Create a new client instance
 const client = new Client({
@@ -43,11 +42,11 @@ client.on('interactionCreate', async interaction => {
   const isOwner = interaction.user.id === interaction.guild.ownerId;
   const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
   const canUseCommands = interaction.member.permissions.has(PermissionFlagsBits.UseApplicationCommands);
-
   if (!isOwner && !isAdmin && !canUseCommands) {
     return interaction.reply({ content: 'You don\'t have the required permissions to use this command.', flags: MessageFlags.Ephemeral });
   }
 
+  // Execute command
   const command = client.commands.get(interaction.commandName);
   if (!command) return;
 
