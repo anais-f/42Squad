@@ -1,5 +1,6 @@
 import cron from 'node-cron';
-import { Client, Collection, Events, GatewayIntentBits } from "discord.js";
+import pkg from 'discord.js';
+const { Client, Collection, Events, GatewayIntentBits, PermissionFlagsBits, MessageFlags } = pkg;
 import displayLocations from "./displayLocations.js";
 import searchLogin from "./searchLogin.js";
 import { secretNotification } from './secretNotification.js';
@@ -8,7 +9,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import './commandsDeploy.js';
-import { MessageFlags } from 'discord.js';
 
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -38,6 +38,15 @@ for (const file of commandFiles) {
 // Interaction listener for slash commands
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
+
+  // Check permission to use commands
+  const isOwner = interaction.user.id === interaction.guild.ownerId;
+  const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+  const canUseCommands = interaction.member.permissions.has(PermissionFlagsBits.UseApplicationCommands);
+
+  if (!isOwner && !isAdmin && !canUseCommands) {
+    return interaction.reply({ content: 'You don\'t have the required permissions to use this command.', flags: MessageFlags.Ephemeral });
+  }
 
   const command = client.commands.get(interaction.commandName);
   if (!command) return;

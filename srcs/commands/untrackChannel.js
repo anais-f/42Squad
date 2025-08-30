@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { MessageFlags } from 'discord.js';
 import db from "../database.js";
-import { checkUserPermissions, checkBotPresenceAndPermissions} from "../commandsCheck.js";
+import { checkBotPresenceAndPermissions} from "../commandsCheck.js";
 
 export const data = new SlashCommandBuilder()
     .setName('untrackchannel')
@@ -15,8 +15,8 @@ export async function execute(interaction) {
     const botCheck = await checkBotPresenceAndPermissions(interaction, channel);
     if (!botCheck.success) return interaction.reply({ content: botCheck.message, flags: MessageFlags.Ephemeral });
 
-    const userPermissionsCheck = await checkUserPermissions(interaction, channel);
-    if (!userPermissionsCheck.success) return interaction.reply({ content: userPermissionsCheck.message, flags: MessageFlags.Ephemeral });
+    // const userPermissionsCheck = await checkUserPermissions(interaction, channel);
+    // if (!userPermissionsCheck.success) return interaction.reply({ content: userPermissionsCheck.message, flags: MessageFlags.Ephemeral });
 
     const lastMsgID = db
         .prepare("SELECT msgID FROM channels WHERE channelID = ?")

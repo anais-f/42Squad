@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { MessageFlags } from 'discord.js';
 import db from '../database.js';
-import { checkUserPermissions, checkBotPresenceAndPermissions} from "../commandsCheck.js";
+import { checkBotPresenceAndPermissions} from "../commandsCheck.js";
 
 export const data = new SlashCommandBuilder()
     .setName('untracklogin')
@@ -22,20 +22,20 @@ export async function execute(interaction) {
     const botCheck = await checkBotPresenceAndPermissions(interaction, channel);
     if (!botCheck.success) return interaction.reply({ content: botCheck.message, flags: MessageFlags.Ephemeral });
 
-    const userPermissionsCheck = await checkUserPermissions(interaction, channel);
-    if (!userPermissionsCheck.success) return interaction.reply({ content: userPermissionsCheck.message, flags: MessageFlags.Ephemeral });
+    // const userPermissionsCheck = await checkUserPermissions(interaction, channel);
+    // if (!userPermissionsCheck.success) return interaction.reply({ content: userPermissionsCheck.message, flags: MessageFlags.Ephemeral });
 
     const channelExisted = await db.valueExists('channels', 'channelID', channelID)
-    if (!channelExisted) return interaction.reply({ content: `Channel <#${channel.name}> does not exist in the database.`, flags: MessageFlags.Ephemeral });
+    if (!channelExisted) return interaction.reply({ content: `Channel <#${channelID}> does not exist in the database.`, flags: MessageFlags.Ephemeral });
 
     const loginExisted = db.prepare("SELECT 1 FROM tracked WHERE channelID = ? AND login = ?").get(channelID, login);
     if (loginExisted) {
       const result = db.prepare("DELETE FROM tracked WHERE channelID = ? AND login = ?");
       result.run(channelID, login);
-      return interaction.reply({ content: `Login ${login} delete in the database.`, flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: `Login \`${login}\` delete in the database.`, flags: MessageFlags.Ephemeral });
     }
     else
-      return interaction.reply({ content: `Login ${login} does not exist in the database.`, flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: `Login \`${login}\` does not exist in the database.`, flags: MessageFlags.Ephemeral });
   }
   catch (error) {
     console.error('Error adding channel:', error);
