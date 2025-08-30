@@ -8,6 +8,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import './commandsDeploy.js';
+import { MessageFlags } from 'discord.js';
 
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -45,7 +46,7 @@ client.on('interactionCreate', async interaction => {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
-    await interaction.reply({ content: 'There was an error while executing this command!', flags: 64 });
+    await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
   }
 });
 

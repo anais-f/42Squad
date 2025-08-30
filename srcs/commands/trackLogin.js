@@ -1,11 +1,22 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { MessageFlags } from 'discord.js';
-import db from "../database.js";
+import db from '../database.js';
 import { checkUserPermissions, checkBotPresenceAndPermissions} from "../commandsCheck.js";
 
 export const data = new SlashCommandBuilder()
-    .setName('untrackchannel')
-    .setDescription('Delete the channel to the database to track login.');
+    .setName('tracklogin')
+    .setDescription('Add a login to the database to track it in this channel.')
+    .addStringOption(option =>
+        option.setName('tracklogin')
+          .setDescription('Add the login to the DB to track it in this channel.')
+          .setRequired(true)
+          .setMaxLength(8)
+    );
+
+// channelID, login
+// checker si le login existe via l'api
+// checker si le login est deja dans la db students -> si non ajouter le login
+// checker si le login est deja dans la db channels_logins pour ce channel -> si non l'ajouter
 
 export async function execute(interaction) {
   const channel = interaction.channel;
@@ -21,19 +32,11 @@ export async function execute(interaction) {
     const channelInDb = await db.valueExists('channels', 'channelID', channelID)
     if (!channelInDb) return interaction.reply({ content: channelInDb.message, flags: MessageFlags.Ephemeral });
 
-    const lastMsgID = db
-        .prepare("SELECT msgID FROM channels WHERE channelID = ?")
-        .get(channelID);
-    if (lastMsgID) {
-      const messageDiscord = await channel.messages.fetch(lastMsgID.msgID);
-      if (messageDiscord) await messageDiscord.delete();
-    }
-    db.removeValue('channels', 'channelID', channelID);
-    return interaction.reply({ content: `Channel <#${channelID}> deleted to the database.`, flags: MessageFlags.Ephemeral });
-
+    // await db.addValue('channels', 'channelID', channelID);
+    // return interaction.reply({ content: `Channel <#${channelID}> added to the database.`, flags: MessageFlags.Ephemeral });
   }
   catch (error) {
-    console.error('Error remove channel:', error);
-    return interaction.reply({ content: 'There was an error while executing untrackchannel command.', flags: MessageFlags.Ephemeral });
+    console.error('Error adding channel:', error);
+    return interaction.reply({ content: 'There was an error while executing tracklogin command.', flags: MessageFlags.Ephemeral });
   }
 }

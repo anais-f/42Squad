@@ -27,8 +27,8 @@ db.exec("INSERT OR IGNORE INTO students VALUES ('scros', NULL)");
  * @param {string} value - The value to look for.
  */
 db.valueExists = function (table, column, value) {
-    const stmt = db.prepare(`SELECT 1 FROM ${table} WHERE ${column} = ? LIMIT 1`);
-    return !!stmt.get(value); // returns true if exists, false otherwise
+  const stmt = db.prepare(`SELECT 1 FROM ${table} WHERE ${column} = ? LIMIT 1`);
+  return !!stmt.get(value); // convert to boolean
 }
 
 /**
@@ -38,13 +38,15 @@ db.valueExists = function (table, column, value) {
  * @param {string} value - The value to add.
  */
 db.addValue = function (table, column, value) {
-    if (this.valueExists(table, column, value)) {
-        console.log(`Value already exists in ${table}.${column}: ${value}`);
-        return;
-    }
-    const stmt = this.prepare(`INSERT INTO ${table} (${column}) VALUES (?)`);
-    stmt.run(value);
-    console.log(`Value added to ${table}.${column}: ${value}`);
+  if (this.valueExists(table, column, value)) {
+    console.log(`Value already exists in ${table}.${column}: ${value}`);
+    return { success: false, message: `Value <#${value}> already exists in the database` };
+  }
+
+  const stmt = this.prepare(`INSERT INTO ${table} (${column}) VALUES (?)`);
+  stmt.run(value);
+  console.log(`Value added to ${table}.${column}: ${value}`);
+  return { success: true, message: `Value <#${value}> added to the database` };
 }
 
 /**
@@ -56,11 +58,13 @@ db.addValue = function (table, column, value) {
 db.removeValue = function (table, column, value) {
   if (!this.valueExists(table, column, value)) {
     console.log(`Value does not exist in ${table}.${column}: ${value}`);
-    return;
+    return { success: false, message: `Value <#${value}> does not exist in the database` };
   }
+
   const stmt = this.prepare(`DELETE FROM ${table} WHERE ${column} = ?`);
   stmt.run(value);
   console.log(`Value removed from ${table}.${column}: ${value}`);
+  return { success: true, message: `Value <#${value}> removed from the database` };
 };
 
 export default db;

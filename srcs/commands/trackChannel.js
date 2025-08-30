@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
+import { MessageFlags } from 'discord.js';
 import db from '../database.js';
 import { checkUserPermissions, checkBotPresenceAndPermissions} from "../commandsCheck.js";
 
@@ -12,19 +13,19 @@ export async function execute(interaction) {
 
   try {
     const botCheck = await checkBotPresenceAndPermissions(interaction, channel);
-    if (!botCheck) return ;
+    if (!botCheck.success) return interaction.reply({ content: botCheck.message, flags: MessageFlags.Ephemeral });
 
     const userPermissionsCheck = await checkUserPermissions(interaction, channel);
-    if (!userPermissionsCheck.success) return interaction.reply({ content: userPermissionsCheck.message, flags: 64 });
+    if (!userPermissionsCheck.success) return interaction.reply({ content: userPermissionsCheck.message, flags: MessageFlags.Ephemeral });
 
-    const channelInDb = await db.valueExists('channels', 'channelID', channelID)
-    if (channelInDb) return interaction.reply({ content: channelInDb.message, flags: 64 });
+    // const channelInDb = await db.valueExists('channels', 'channelID', channelID)
+    // if (channelInDb) return interaction.reply({ content: channelInDb.message, flags: MessageFlags.Ephemeral });
 
     await db.addValue('channels', 'channelID', channelID);
-    return interaction.reply({ content: `Channel <#${channelID}> added to the database.`, flags: 64 });
+    return interaction.reply({ content: `Channel <#${channelID}> added to the database.`, flags: MessageFlags.Ephemeral });
   }
   catch (error) {
     console.error('Error adding channel:', error);
-    return interaction.reply({ content: 'There was an error while executing trackchannel command.', flags: 64 });
+    return interaction.reply({ content: 'There was an error while executing trackchannel command.', flags: MessageFlags.Ephemeral });
   }
 }
