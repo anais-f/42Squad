@@ -10,3 +10,8 @@ services:
       - SECRET_OWNER_ID=${SECRET_OWNER_ID}
       - TRACK_CHANNEL=${TRACK_CHANNEL}
     restart: unless-stopped
+    volumes:
+      - database:/app/db
+
+volumes:
+  database:
