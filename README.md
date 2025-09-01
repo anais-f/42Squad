@@ -10,6 +10,7 @@ Discord bot for the awful weasels.
 - Edit and update tracking messages
 - Provide simple slash commands for server management
 - Search and display an embed about a specific user
+- You can track up to 24 logins per channel
 
 ## How to Use
 Invite the bot to your server using the following link:
