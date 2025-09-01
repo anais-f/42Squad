@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { Client, Collection, Events, GatewayIntentBits } from "discord.js";
+import pkg from 'discord.js';
 import displayLocations from "./displayLocations.js";
 import searchLogin from "./searchLogin.js";
 import { secretNotification } from './secretNotification.js';
@@ -7,12 +7,11 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import './commandsDeploy.js';
+const { Client, Collection, Events, GatewayIntentBits, PermissionFlagsBits, MessageFlags } = pkg;
 
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
 
 // Create a new client instance
 const client = new Client({
@@ -38,6 +37,13 @@ for (const file of commandFiles) {
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
 
+  // Check permission to use commands
+  const canUseCommands = interaction.member.permissions.has(PermissionFlagsBits.UseApplicationCommands);
+  if (!canUseCommands) {
+    return interaction.reply({ content: 'You don\'t have the required permissions to use this command.', flags: MessageFlags.Ephemeral });
+  }
+
+  // Execute command
   const command = client.commands.get(interaction.commandName);
   if (!command) return;
 
@@ -45,7 +51,7 @@ client.on('interactionCreate', async interaction => {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
-    await interaction.reply({ content: 'There was an error while executing this command!', flags: 64 });
+    await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
   }
 });
 
@@ -66,7 +72,7 @@ client.once(Events.ClientReady, (readyClient) => {
   }
 
   // Launch Logged users tracking loop
-  setInterval(displayLocations, 5000, client);
+  setInterval(displayLocations, process.env.INTERVAL_SECONDS, client);
 
   // Set client activity
   client.user.setActivity("in development");

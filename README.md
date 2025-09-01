@@ -17,14 +17,15 @@ Invite the bot to your server using the following link:
 [Invite Link](https://discord.com/oauth2/authorize?client_id=1276127823433826417)
 
 Once added, use the available commands in the channels where the bot has permissions and where you would like to track login activity:
-
 - `/trackchannel`: Add the channel to the database.
 - `/untrackchannel`: Remove the channel from the database.
 - `/tracklogin <login>`: Add a login ID to track.
 - `/untracklogin <login>`: Remove a login ID from tracking.
+- `/listlogins`: List all tracked logins in the current channel.
+These commands will only be available for the administrator of the server.
 
-An other command is available to search for a specific user and display their information in an embed:
-- `<login>@42`
+Another command is available for all users to search for a specific user and display their information in an embed:
+- `/search <login>`: Search for a user and display their information.
 
 ## Bot permissions
 The bot requires the following permissions to function correctly:

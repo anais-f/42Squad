@@ -2,13 +2,17 @@ import { EmbedBuilder } from "discord.js";
 import { api42 } from "./apiInterface.js";
 import db from "./database.js";
 
+/**
+ * Fetches the current campus locations of users and updates the database with their host information.
+ * If a user is not found in the fetched data, their host information is set to NULL in the database.
+ * @returns {Promise<void>}
+ */
 async function trackLocation() {
   const usersLocation = await api42.getCampusLocations(9, true);
 
   const updateHost = db.prepare("UPDATE students SET host = ? WHERE login = ?");
   const resetHost = db.prepare("UPDATE students SET host = NULL WHERE login = ?");
 
-  const presentLogins = usersLocation.map(user => user.user.login);
   const loginsTracked = db.prepare("SELECT login FROM students").all().map(row => row.login);
 
   loginsTracked.forEach(login => {
@@ -18,6 +22,11 @@ async function trackLocation() {
   });
 }
 
+/**
+ * Creates a Discord embed message displaying the locations of users.
+ * @param locations
+ * @returns {EmbedBuilder}
+ */
 function createLocationEmbed(locations) {
  const embed = new EmbedBuilder()
       .setColor("#00ecef")
@@ -33,6 +42,13 @@ function createLocationEmbed(locations) {
     return embed;
 }
 
+/**
+ * Sends a new message to the specified Discord channel and updates the database with the message ID.
+ * @param chanDiscord
+ * @param chanID
+ * @param embed
+ * @returns {Promise<void>}
+ */
 async function sendNewMessage(chanDiscord, chanID, embed) {
   if (!chanDiscord) {
     console.error(`Channel with ID ${chanID} not found in cache.`);
@@ -41,7 +57,7 @@ async function sendNewMessage(chanDiscord, chanID, embed) {
     const messageDiscord = await chanDiscord
         .send({ embeds: [embed] })
         .catch((error) => {
-            console.error(`Error senting message: ${error.rawError.message}`);
+            console.error(`Error sending message: ${error.rawError.message}`);
         });
     db.prepare("UPDATE channels SET msgID = ? WHERE channelID = ?").run(
         messageDiscord.id,
@@ -49,16 +65,24 @@ async function sendNewMessage(chanDiscord, chanID, embed) {
     );
 }
 
+/**
+ * Main function to display locations of tracked users in their respective channels.
+ * @param client
+ * @returns {Promise<void>}
+ */
 async function displayLocations(client) {
   try {
     await trackLocation();
-    const locations = db.prepare("SELECT * FROM students WHERE host IS NOT NULL").all();
-    locations.sort((a, b) => a.host.localeCompare(b.host));
-
-    const embed = createLocationEmbed(locations);
     const chanArrayID = db.prepare("SELECT channelID FROM channels").all().map(row => row.channelID);
 
     for (const chanID of chanArrayID) {
+      const trackedLogins = db.prepare("SELECT login FROM tracked WHERE channelID = ?").all(chanID).map(row => row.login);
+      const locations = db.prepare("SELECT * FROM students WHERE host IS NOT NULL").all();
+      const filteredLocations = locations.filter(location => trackedLogins.includes(location.login));
+      filteredLocations.sort((a, b) => a.host.localeCompare(b.host));
+
+      const embed = createLocationEmbed(filteredLocations);
+
       const chanDiscord = client.channels.cache.get(chanID); // recupere le channel via son ID
       if (chanDiscord) {
         const lastMsgID = db
