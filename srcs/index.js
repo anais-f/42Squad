@@ -72,12 +72,12 @@ client.once(Events.ClientReady, (readyClient) => {
   }
 
   // Launch Logged users tracking loop
-  const interval = process.env.INTERVAL_SECONDS;
-  if (!interval) {
-    console.error("INTERVAL_SECONDS is not set in the environment variables.");
+  const intervalSeconds = parseInt(process.env.INTERVAL_SECONDS, 10);
+  if (isNaN(intervalSeconds) || intervalSeconds <= 0) {
+    console.error("INTERVAL_SECONDS must be a positive integer.");
     process.exit(1);
   }
-  setInterval(displayLocations, interval, client);
+  setInterval(displayLocations, intervalSeconds * 1000, client);
 
   // Set client activity
   client.user.setActivity("in development");
