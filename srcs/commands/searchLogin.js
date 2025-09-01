@@ -27,10 +27,8 @@ export async function execute(interaction) {
   try {
     const user = await api42.getUser(login);
     return interaction.reply({ embeds: [getProfileEmbed(user)] });
-  } catch (error) {
-    if (!error.rawError) {
-      return interaction.reply({ content: MESSAGES.ERRORS.LOGIN_NOT_FOUND_API, flags: MessageFlags.Ephemeral });
-    }
-    return interaction.reply({ content: MESSAGES.ERRORS.GENERIC('search'), flags: MessageFlags.Ephemeral });
+  }
+  catch (error) {
+    return interaction.reply({ content: MESSAGES.ERRORS.LOGIN_NOT_FOUND_API(login), flags: MessageFlags.Ephemeral });
   }
 }
