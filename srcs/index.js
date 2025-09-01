@@ -72,6 +72,11 @@ client.once(Events.ClientReady, (readyClient) => {
   }
 
   // Launch Logged users tracking loop
+  const interval = process.env.INTERVAL_SECONDS;
+  if (!interval) {
+    console.error("INTERVAL_SECONDS is not set in the environment variables.");
+    process.exit(1);
+  }
   setInterval(displayLocations, process.env.INTERVAL_SECONDS, client);
 
   // Set client activity
