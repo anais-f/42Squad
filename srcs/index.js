@@ -13,6 +13,13 @@ const { Client, Collection, Events, GatewayIntentBits, PermissionFlagsBits, Mess
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Load environment variables from .env file
+const intervalSeconds = parseInt(process.env.INTERVAL_SECONDS, 10);
+if (isNaN(intervalSeconds) || intervalSeconds <= 0) {
+  console.error("INTERVAL_SECONDS must be a positive integer.");
+  process.exit(1);
+}
+
 // Create a new client instance
 const client = new Client({
   intents: [
@@ -72,7 +79,7 @@ client.once(Events.ClientReady, (readyClient) => {
   }
 
   // Launch Logged users tracking loop
-  setInterval(displayLocations, process.env.INTERVAL_SECONDS, client);
+  setInterval(displayLocations, intervalSeconds * 1000, client);
 
   // Set client activity
   client.user.setActivity("in development");

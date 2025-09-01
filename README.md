@@ -22,7 +22,7 @@ Once added, use the available commands in the channels where the bot has permiss
 - `/untrackchannel`: Remove the channel from the database.
 - `/tracklogin <login>`: Add a login ID to track.
 - `/untracklogin <login>`: Remove a login ID from tracking.
-- `/listlogins`: List all tracked logins in the current channel.
+- `/listlogins`: List all tracked logins in the current channel.  
 These commands will only be available for the administrator of the server.
 
 Another command is available for all users to search for a specific user and display their information in an embed:
