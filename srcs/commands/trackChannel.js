@@ -1,11 +1,12 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
 import { MessageFlags } from 'discord.js';
 import db from '../database.js';
 import { checkBotPresenceAndPermissions, MESSAGES } from "../commandsUtils.js";
 
 export const data = new SlashCommandBuilder()
     .setName('trackchannel')
-    .setDescription('Add the channel to the database to track login.');
+    .setDescription('Add the channel to the database to track login.')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator);
 
 export async function execute(interaction) {
   const channel = interaction.channel;

@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
 import { MessageFlags } from 'discord.js';
 import db from '../database.js';
 import { checkBotPresenceAndPermissions, MESSAGES } from "../commandsUtils.js";
@@ -6,17 +6,26 @@ import { checkBotPresenceAndPermissions, MESSAGES } from "../commandsUtils.js";
 export const data = new SlashCommandBuilder()
     .setName('untracklogin')
     .setDescription('Add a login to the database to track it in this channel.')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addStringOption(option =>
         option.setName('untracklogin')
             .setDescription('Remove the login to the DB to track it in this channel.')
             .setRequired(true)
             .setMaxLength(8)
+
     );
 
 export async function execute(interaction) {
   const channel = interaction.channel;
   const channelID = channel.id;
   const login = interaction.options.getString('untracklogin').toLowerCase();
+
+  if (!/^[a-z0-9-]+$/.test(login)) {
+    return interaction.reply({
+      content: 'Invalid login format. Only letters, numbers, and hyphens are allowed.',
+      flags: MessageFlags.Ephemeral
+    });
+  }
 
   try {
     const botCheck = await checkBotPresenceAndPermissions(interaction, channel);

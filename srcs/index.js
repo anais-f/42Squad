@@ -8,7 +8,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 const { Client, Collection, Events, GatewayIntentBits, PermissionFlagsBits, MessageFlags } = pkg;
-// import './deploy-commands.js';
 
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -39,10 +38,8 @@ client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
 
   // Check permission to use commands
-  const isOwner = interaction.user.id === interaction.guild.ownerId;
-  const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
   const canUseCommands = interaction.member.permissions.has(PermissionFlagsBits.UseApplicationCommands);
-  if (!isOwner && !isAdmin && !canUseCommands) {
+  if (!canUseCommands) {
     return interaction.reply({ content: 'You don\'t have the required permissions to use this command.', flags: MessageFlags.Ephemeral });
   }
 
@@ -75,7 +72,7 @@ client.once(Events.ClientReady, (readyClient) => {
   }
 
   // Launch Logged users tracking loop
-  setInterval(displayLocations, 5000, client);
+  setInterval(displayLocations, process.env.INTERVAL_SECONDS, client);
 
   // Set client activity
   client.user.setActivity("in development");
