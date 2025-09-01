@@ -4,9 +4,9 @@ import db from '../database.js';
 import { checkBotPresenceAndPermissions, MESSAGES } from "../commandsUtils.js";
 
 export const data = new SlashCommandBuilder()
-    .setName('listlogins')
-    .setDescription('List all tracked logins in this channel.')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator);
+  .setName('listlogins')
+  .setDescription('List all tracked logins in this channel.')
+  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator);
 
 export async function execute(interaction) {
   const channel = interaction.channel;
@@ -22,7 +22,7 @@ export async function execute(interaction) {
     const trackedLogins = db.prepare("SELECT login FROM tracked WHERE channelID = ? ORDER BY login").all(channelID);
 
     if (trackedLogins.length === 0) {
-      return interaction.reply({ content: 'No logins are currently tracked in this channel.', flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: MESSAGES.SUCCESS.NO_TRACKED_LOGINS, flags: MessageFlags.Ephemeral });
     }
 
     const embed = new EmbedBuilder()

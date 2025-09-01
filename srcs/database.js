@@ -26,14 +26,11 @@ db.valueExists = function (table, column, value) {
  * @param {string} value - The value to add.
  */
 db.addValue = function (table, column, value) {
-  if (this.valueExists(table, column, value)) {
-    console.log(`Value already exists in ${table}.${column}: ${value}`);
+  if (this.valueExists(table, column, value))
     return { success: false };
-  }
 
   const stmt = this.prepare(`INSERT INTO ${table} (${column}) VALUES (?)`);
   stmt.run(value);
-  console.log(`Value added to ${table}.${column}: ${value}`);
   return { success: true };
 }
 
@@ -44,14 +41,11 @@ db.addValue = function (table, column, value) {
  * @param {string} value - The value to remove.
  */
 db.removeValue = function (table, column, value) {
-  if (!this.valueExists(table, column, value)) {
-    console.log(`Value does not exist in ${table}.${column}: ${value}`);
+  if (!this.valueExists(table, column, value))
     return { success: false };
-  }
 
   const stmt = this.prepare(`DELETE FROM ${table} WHERE ${column} = ?`);
   stmt.run(value);
-  console.log(`Value removed from ${table}.${column}: ${value}`);
   return { success: true };
 };
 
