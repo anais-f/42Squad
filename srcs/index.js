@@ -77,7 +77,7 @@ client.once(Events.ClientReady, (readyClient) => {
     console.error("INTERVAL_SECONDS is not set in the environment variables.");
     process.exit(1);
   }
-  setInterval(displayLocations, process.env.INTERVAL_SECONDS, client);
+  setInterval(displayLocations, interval, client);
 
   // Set client activity
   client.user.setActivity("in development");
