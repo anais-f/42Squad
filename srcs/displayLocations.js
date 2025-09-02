@@ -9,6 +9,7 @@ import db from "./database.js";
  */
 async function trackLocation() {
   const usersLocation = await api42.getCampusLocations(9, true);
+  const usersMap = new Map(usersLocation.map((user) => [user.user.login, user.host]));
 
   const updateHost = db.prepare("UPDATE students SET host = ? WHERE login = ?");
   const resetHost = db.prepare("UPDATE students SET host = NULL WHERE login = ?");
@@ -16,8 +17,8 @@ async function trackLocation() {
   const loginsTracked = db.prepare("SELECT login FROM students").all().map(row => row.login);
 
   loginsTracked.forEach(login => {
-    const user = usersLocation.find(user => user.user.login === login);
-    if (user) updateHost.run(user.host, user.user.login);
+    const host = usersMap.get(login);
+    if (host) updateHost.run(host, login);
     else  resetHost.run(login);
   });
 }
@@ -74,16 +75,16 @@ async function displayLocations(client) {
   try {
     await trackLocation();
     const chanArrayID = db.prepare("SELECT channelID FROM channels").all().map(row => row.channelID);
+    const locations = db.prepare("SELECT * FROM students WHERE host IS NOT NULL").all();
 
     for (const chanID of chanArrayID) {
       const trackedLogins = db.prepare("SELECT login FROM tracked WHERE channelID = ?").all(chanID).map(row => row.login);
-      const locations = db.prepare("SELECT * FROM students WHERE host IS NOT NULL").all();
       const filteredLocations = locations.filter(location => trackedLogins.includes(location.login));
       filteredLocations.sort((a, b) => a.host.localeCompare(b.host));
 
       const embed = createLocationEmbed(filteredLocations);
 
-      const chanDiscord = client.channels.cache.get(chanID); // recupere le channel via son ID
+      const chanDiscord = client.channels.cache.get(chanID);
       if (chanDiscord) {
         const lastMsgID = db
             .prepare("SELECT msgID FROM channels WHERE channelID = ?")
@@ -96,7 +97,7 @@ async function displayLocations(client) {
             await messageDiscord.edit({ embeds: [embed] });
           }
           catch (error) {
-            console.error(`Error senting message: ${error.rawError.message}`);
+            console.error(`Error sending message: ${error.rawError.message}`);
             await sendNewMessage(chanDiscord, chanID, embed);
           }
         }
