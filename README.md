@@ -1,16 +1,17 @@
-# ft_affreuses_fouines
+# ft_42Friends
 
-Discord bot for the awful weasels.
+ft_42Friends is a Discord bot for real-time monitoring of 42 school students' campus presence. It tracks intranet logins and logouts, displaying live status updates directly within your Discord channels, making it easy to see who is on campus at a glance.
 
 ## Features
 - Track login activity of 42 school students
 - Display tracking information in a Discord embed
+- You can track up to 24 logins per channel
 - Add or remove channels for tracking
 - Add or remove login IDs to track
 - Edit and update tracking messages
 - Provide simple slash commands for server management
 - Search and display an embed about a specific user
-- You can track up to 24 logins per channel
+
 
 ## How to Use
 Invite the bot to your server using the following link:
@@ -32,10 +33,7 @@ Another command is available for all users to search for a specific user and dis
 The bot requires the following permissions to function correctly:
 - Send messages in channels
 - Edit messages in tracking channels
-- Read message history 
-
-## Support
-For help or questions, contact the bot administrator.
+- Embed links in messages
 
 ## License
 This project is licensed under the MIT License.
