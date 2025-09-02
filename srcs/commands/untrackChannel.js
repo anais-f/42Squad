@@ -1,5 +1,4 @@
-import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
-import { MessageFlags } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from 'discord.js';
 import db from "../database.js";
 import { checkBotPresenceAndPermissions, MESSAGES} from "../commandsUtils.js";
 
@@ -14,7 +13,8 @@ export async function execute(interaction) {
 
   try {
     const botCheck = await checkBotPresenceAndPermissions(interaction, channel);
-    if (!botCheck.success) return interaction.reply({ content: botCheck.message, flags: MessageFlags.Ephemeral });
+    if (!botCheck.success)
+      return interaction.reply({ content: botCheck.message, flags: MessageFlags.Ephemeral });
 
     const lastMsgID = db
         .prepare("SELECT msgID FROM channels WHERE channelID = ?")
@@ -25,11 +25,13 @@ export async function execute(interaction) {
     }
 
     const result = db.removeValue('channels', 'channelID', channelID);
-    if (!result.success) return interaction.reply({ content: MESSAGES.ERRORS.CHANNEL_NOT_FOUND(channelID), flags: MessageFlags.Ephemeral });
+    if (!result.success)
+      return interaction.reply({ content: MESSAGES.ERRORS.CHANNEL_NOT_FOUND(channelID), flags: MessageFlags.Ephemeral });
 
     return interaction.reply({ content: MESSAGES.SUCCESS.CHANNEL_UNTRACK(channelID), flags: MessageFlags.Ephemeral });
   }
   catch (error) {
+    console.error('Generic Command Error: ', error);
     return interaction.reply({ content: MESSAGES.ERRORS.GENERIC('untrackchannel'), flags: MessageFlags.Ephemeral });
   }
 }

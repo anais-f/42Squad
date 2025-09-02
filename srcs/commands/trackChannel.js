@@ -1,5 +1,4 @@
-import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
-import { MessageFlags } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from 'discord.js';
 import db from '../database.js';
 import { checkBotPresenceAndPermissions, MESSAGES } from "../commandsUtils.js";
 
@@ -14,14 +13,17 @@ export async function execute(interaction) {
 
   try {
     const botCheck = await checkBotPresenceAndPermissions(interaction, channel);
-    if (!botCheck.success) return interaction.reply({ content: botCheck.message, flags: MessageFlags.Ephemeral });
+    if (!botCheck.success)
+      return interaction.reply({ content: botCheck.message, flags: MessageFlags.Ephemeral });
 
     const result = db.addValue('channels', 'channelID', channelID);
-    if (!result.success) return interaction.reply({ content: MESSAGES.ERRORS.CHANNEL_ALREADY_TRACKED(channelID), flags: MessageFlags.Ephemeral });
+    if (!result.success)
+      return interaction.reply({ content: MESSAGES.ERRORS.CHANNEL_ALREADY_TRACKED(channelID), flags: MessageFlags.Ephemeral });
 
     return interaction.reply({ content: MESSAGES.SUCCESS.CHANNEL_TRACK(channelID), flags: MessageFlags.Ephemeral });
   }
   catch (error) {
+    console.error('Generic Command Error: ', error);
     return interaction.reply({ content: MESSAGES.ERRORS.GENERIC('trackchannel'), flags: MessageFlags.Ephemeral });
   }
 }

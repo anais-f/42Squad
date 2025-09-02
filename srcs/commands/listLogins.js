@@ -1,5 +1,4 @@
-import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } from 'discord.js';
-import { MessageFlags } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, MessageFlags } from 'discord.js';
 import db from '../database.js';
 import { checkBotPresenceAndPermissions, MESSAGES } from "../commandsUtils.js";
 
@@ -17,13 +16,13 @@ export async function execute(interaction) {
     if (!botCheck.success) return interaction.reply({ content: botCheck.message, flags: MessageFlags.Ephemeral });
 
     const channelExisted = await db.valueExists('channels', 'channelID', channelID);
-    if (!channelExisted) return interaction.reply({ content: MESSAGES.ERRORS.CHANNEL_NOT_FOUND(channelID), flags: MessageFlags.Ephemeral });
+    if (!channelExisted)
+      return interaction.reply({ content: MESSAGES.ERRORS.CHANNEL_NOT_FOUND(channelID), flags: MessageFlags.Ephemeral });
 
     const trackedLogins = db.prepare("SELECT login FROM tracked WHERE channelID = ? ORDER BY login").all(channelID);
 
-    if (trackedLogins.length === 0) {
+    if (trackedLogins.length === 0)
       return interaction.reply({ content: MESSAGES.SUCCESS.NO_TRACKED_LOGINS, flags: MessageFlags.Ephemeral });
-    }
 
     const embed = new EmbedBuilder()
       .setTitle(`Tracked Logins in #${channel.name}`)
@@ -34,6 +33,7 @@ export async function execute(interaction) {
     return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
   }
   catch (error) {
+    console.error('Generic Command Error: ', error);
     return interaction.reply({ content: MESSAGES.ERRORS.GENERIC('listlogins'), flags: MessageFlags.Ephemeral });
   }
 }
