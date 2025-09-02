@@ -2,6 +2,7 @@ import { Events, MessageFlags, PermissionFlagsBits } from 'discord.js';
 import searchLogin from '../searchLogin.js';
 import displayLocations from '../displayLocations.js';
 import { secretNotification } from '../secretNotification.js';
+import { MESSAGES } from '../commandsUtils.js';
 import cron from 'node-cron';
 
 /**
@@ -27,7 +28,7 @@ export function registerEvents(client, intervalSeconds) {
       await command.execute(interaction);
     } catch (error) {
       console.error(error);
-      await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+      await interaction.reply({ content: MESSAGES.ERRORS.GENERIC(command), flags: MessageFlags.Ephemeral });
     }
   });
 
