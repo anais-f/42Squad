@@ -1,6 +1,7 @@
 # ft_42Friends
 
 ft_42Friends is a Discord bot for real-time monitoring of 42 school students' campus presence. It tracks intranet logins and logouts, displaying live status updates directly within your Discord channels, making it easy to see who is on campus at a glance.
+The bot is only available for the 42 school of Lyon for now.
 
 ## Features
 - Track login activity of 42 school students
